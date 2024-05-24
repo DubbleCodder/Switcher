@@ -1,8 +1,35 @@
 import turtle
 import random
+import tkinter as tk
+
+def menu():
+    win = tk.Tk()
+
+    win.geometry("400x400")
+    win.configure(background='light blue')
+
+    def close():
+        win.destroy()
+
+    def quitgame():
+        turtle.bye()
+        win.destroy()
+
+    btn = tk.Button(win, text="play", bg='blue', fg='light blue', height=2, width = 14,command=close)
+    btn.pack()
+
+    quitbtn = tk.Button(win, text="quit", bg="blue", fg='light blue', height=2, width = 14, command=quitgame)
+    quitbtn.pack()
+
+    win.mainloop()
+
+menu()
 
 def collide(a, b):
     return abs(a.xcor() - b.xcor()) < 30 and abs(a.ycor() - b.ycor()) < 30
+
+def collide1(a, b):
+    return abs(a.xcor() - b.xcor()) < 40 and abs(a.ycor() - b.ycor()) < 40
 
 def collideZ(a, b):
     return abs(a.xcor() - b.xcor()) < 1000 and abs(a.ycor() - b.ycor()) < 30
@@ -19,6 +46,9 @@ bad = 'C:/Users/cassi/Music/pics/bad.gif'
 cloud = 'C:/Users/cassi/Music/pics/cloud.gif'
 island3 = 'C:/Users/cassi/Music/pics/desisland.gif'
 island4 = 'C:/Users/cassi/Music/pics/desisland2.gif'
+Tea = 'C:/Users/cassi/Music/pics/tea.gif'
+
+score = 0
 
 sc = turtle.Screen()
 sc.setup(1280, 720)
@@ -30,6 +60,7 @@ sc.addshape(island2)
 sc.addshape(cloud)
 sc.addshape(island3)
 sc.addshape(island4)
+sc.addshape(Tea)
 
 plr = turtle.Turtle()
 plr.shape(player)
@@ -37,10 +68,18 @@ plr.penup()
 plr.speed(99999999999999999999999999999999)
 plr.goto(0, 0)
 
+tea = turtle.Turtle()
+tea.shape(Tea)
+tea.penup()
+tea.speed(999999999999999999999999999999999999)
+tea.goto(100, 500)
+
 def gravity():
     y = plr.ycor()
     y -= 8
     plr.sety(y)
+
+gravity()
 
 islandtype = [1, 2]
 itype = random.choice(islandtype)
@@ -113,6 +152,15 @@ kill.penup()
 kill.speed(900000000000000000)
 kill.goto(100, 100)
 
+points = turtle.Turtle()
+points.color('yellow')
+style = ('Courier', 30, 'italic')
+points.penup()
+points.write('Score: 0', font=style)
+points.speed(99999999999999999999999999999999999999999999)
+points.goto(-500, 0)
+points.hideturtle()
+
 cld = turtle.Turtle()
 cld.shape(cloud)
 cld.penup()
@@ -169,6 +217,16 @@ def switch2():
 
     sc.ontimer(switch2, 6000)
 
+def tea_pos():
+    x = random.randint(-420, 420)
+    y = random.randint(-420, 420)
+
+    tea.goto(x, y)
+
+    sc.ontimer(tea_pos, 10000)
+
+tea_pos()
+
 def switch3():
     x = random.randint(-420, 420)
     y = random.randint(-420, 420)
@@ -176,6 +234,16 @@ def switch3():
     floor3.goto(x, y)
 
     sc.ontimer(switch3, 6000)
+
+def score_add():
+    global score
+    score += 1
+
+    points.clear()
+    points.write('Score: ' + str(score), font=style)
+    sc.ontimer(score_add, 1000)
+
+score_add()
 
 def switch4():
     x = random.randint(-420, 420)
@@ -281,10 +349,14 @@ def space():
     y += 90
     plr.sety(y)
 
+def esc():
+    menu()
+
 turtle.listen()
 turtle.onkeypress(a, 'a')
 turtle.onkeypress(d, 'd')
 turtle.onkeypress(space, 'space')
+turtle.onkey(esc, 'Escape')
 
 while True:
 
@@ -327,6 +399,17 @@ while True:
 
     if collide2(cld4, cle):
         cld4.goto(500, -320)
+
+    if collide(plr, tea):
+        score += 10
+
+        x = random.randint(-420, 420)
+        y = random.randint(-420, 420)
+
+        tea.goto(x, y)
+
+        points.clear()
+        points.write('Score: ' + str(score), font=style)
 
     
 
